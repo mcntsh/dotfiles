@@ -6,12 +6,10 @@ set shortmess+=I
 
 " syntax highlighting
 set termguicolors
-syntax on
-colorscheme dracula
-color dracula
-set background=dark
 let g:colors_name = 'dracula'
 let g:dracula_colorterm = 0
+syntax on
+color dracula
 filetype plugin on
 
 " show line numbers
