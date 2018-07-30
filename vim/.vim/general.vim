@@ -17,6 +17,9 @@ set backspace=indent,eol,start
 
 " indenting rules
 set autoindent
+set expandtab
+set ts=4
+set sw=4
 
 " misc stuff
 set ruler

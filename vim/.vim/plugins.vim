@@ -10,8 +10,11 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'easymotion/vim-easymotion'
 Plug 'christoomey/vim-tmux-navigator'
 
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
+" Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+" Plug 'junegunn/fzf.vim'
+
+" Ack
+Plug 'mileszs/ack.vim'
 
 " Airline
 Plug 'vim-airline/vim-airline'
@@ -20,7 +23,7 @@ Plug 'tpope/vim-fugitive'
 
 " Javascript
 Plug 'pangloss/vim-javascript'
-Plug 'mxw/vim-jsx'
+Plug 'maxmellon/vim-jsx-pretty'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'w0rp/ale'
 
@@ -31,6 +34,7 @@ Plug 'Shougo/neosnippet'
 Plug 'Shougo/neosnippet-snippets'
 Plug 'SirVer/ultisnips'
 
+" Utility
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-surround'
 Plug 'scrooloose/nerdcommenter'
@@ -87,7 +91,7 @@ nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>f :Ag<CR>
 
 " Prettier configs
-autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue PrettierAsync
+" autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue PrettierAsync
 
 " Ale configs
 let g:ale_set_loclist = 0
@@ -109,6 +113,6 @@ nnoremap <silent> <C-l> :TmuxNavigateRight<CR>
 let g:EasyMotion_do_mapping = 0
 let g:EasyMotion_smartcase = 1
 
-map / <Plug>(easymotion-sn)
+map <Space> <Plug>(easymotion-sn)
+omap <Space> <Plug>(easymotion-tn)
 
-omap / <Plug>(easymotion-tn)
