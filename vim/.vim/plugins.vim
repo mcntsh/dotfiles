@@ -9,12 +9,9 @@ Plug 'Yggdroot/indentLine'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'easymotion/vim-easymotion'
 Plug 'christoomey/vim-tmux-navigator'
-
-" Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-" Plug 'junegunn/fzf.vim'
-
-" Ack
-Plug 'mileszs/ack.vim'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'rking/ag.vim'
+Plug 'taiansu/nerdtree-ag'
 
 " Airline
 Plug 'vim-airline/vim-airline'
@@ -22,6 +19,8 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-fugitive'
 
 " Javascript
+Plug 'majutsushi/tagbar'
+Plug 'ternjs/tern_for_vim'
 Plug 'pangloss/vim-javascript'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
@@ -41,6 +40,7 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'mattn/emmet-vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'terryma/vim-multiple-cursors'
+Plug 'godlygeek/tabular'
 
 call plug#end()
 
@@ -85,17 +85,15 @@ nnoremap <silent> <C-\> :call OpenNerdTree()<CR>
 let g:NERDCompactSexyComs = 1
 let g:NERDSpaceDelims = 1
 
-" FZF configs
-nnoremap <leader>p :Files<CR>
-nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>f :Ag<CR>
+" Ag configs
+let g:ag_working_path_mode="r"
 
 " Prettier configs
 " autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue PrettierAsync
 
 " Ale configs
 let g:ale_set_loclist = 0
-let g:ale_set_quickfix = 1
+let g:ale_set_quickfix = 0
 let g:ale_linters = {
 \   'javascript': [ 'eslint', 'flow' ]
 \ }
@@ -116,3 +114,11 @@ let g:EasyMotion_smartcase = 1
 map <Space> <Plug>(easymotion-sn)
 omap <Space> <Plug>(easymotion-tn)
 
+" Tabular configs
+nmap <Leader>a= :Tabularize /=<CR>
+vmap <Leader>a= :Tabularize /=<CR>
+nmap <Leader>a: :Tabularize /:\zs<CR>
+vmap <Leader>a: :Tabularize /:\zs<CR>
+
+" Tagbar configs
+nnoremap <Leader>t :TagbarToggle<CR>

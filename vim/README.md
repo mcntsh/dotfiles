@@ -24,6 +24,13 @@ pip2 install --user neovim
 pip3 install --user neovim
 ```
 
+3.  Install ctags and jsctags
+
+```
+brew install ctags
+npm install -g git+https://github.com/ramitos/jsctags.git
+```
+
 ## Installation
 
 Place the contents of this directory in your `$HOME` directory.

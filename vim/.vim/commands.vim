@@ -8,3 +8,7 @@ inoremap <Leader>, <Esc>:w<CR>gi
 " re-bind escape
 inoremap jj <Esc>
 
+" folding
+nnoremap - za
+nnoremap _ zM
+nnoremap + zR

@@ -15,14 +15,17 @@ filetype plugin on
 " show line numbers
 set number
 
+" enable mouse
+set mouse=a
+
 " no line wrapping
 set nowrap
 
-" no folding
-set nofoldenable
+" folding
 set foldlevel=99
-set foldminlines=99
 set foldlevelstart=99
+set foldmethod=indent
+set foldcolumn=1
 
 " highlight cursor
 set cursorline
