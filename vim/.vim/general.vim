@@ -3,6 +3,7 @@ set nocompatible
 
 " security
 set modelines=0
+set secure
 
 " hide buffers, not close them
 set hidden
@@ -40,3 +41,6 @@ set splitbelow
 
 " clipboard
 set clipboard^=unnamedplus
+
+" project-specific config
+set exrc

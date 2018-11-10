@@ -4,12 +4,14 @@ call plug#begin('$HOME/.vim/plugged')
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'chriskempson/base16-vim'
 Plug 'Yggdroot/indentLine'
+Plug 'elzr/vim-json'
 
 " Navigation
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'easymotion/vim-easymotion'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'ctrlpvim/ctrlp.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 Plug 'rking/ag.vim'
 Plug 'taiansu/nerdtree-ag'
 
@@ -19,8 +21,6 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-fugitive'
 
 " Javascript
-Plug 'majutsushi/tagbar'
-Plug 'ternjs/tern_for_vim'
 Plug 'pangloss/vim-javascript'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
@@ -31,28 +31,38 @@ Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'wokalski/autocomplete-flow'
 Plug 'Shougo/neosnippet'
 Plug 'Shougo/neosnippet-snippets'
-Plug 'SirVer/ultisnips'
 
 " Utility
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-surround'
-Plug 'scrooloose/nerdcommenter'
 Plug 'mattn/emmet-vim'
 Plug 'airblade/vim-gitgutter'
-Plug 'terryma/vim-multiple-cursors'
 Plug 'godlygeek/tabular'
+Plug 'editorconfig/editorconfig-vim'
+
+" Ctags
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'xolox/vim-easytags'
+Plug 'xolox/vim-misc'
 
 call plug#end()
-
-" UltiSnips configs
-let g:UltiSnipsSnippetsDir = '~/.nvim/UltiSnips'
-let g:UltiSnipsExpandTrigger = '<nop>'
-inoremap <expr> <CR> pumvisible() ? "<C-R>=UltiSnips#ExpandSnippetOrJump()<CR>" : "\<CR>"
 
 " Deoplete configs
 let g:deoplete#enable_at_startup = 1
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" Neosnippets configs
+let g:neosnippet#snippets_directory='~/.vim/plugged/neosnippet-snippets/neosnippets'
+imap <C-k> <Plug>(neosnippet_expand_or_jump)
+smap <C-k> <Plug>(neosnippet_expand_or_jump)
+xmap <C-k> <Plug>(neosnippet_expand_target)
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
 
 " Airline configs
 let g:airline_powerline_fonts = 1
@@ -88,8 +98,13 @@ let g:NERDSpaceDelims = 1
 " Ag configs
 let g:ag_working_path_mode="r"
 
-" Prettier configs
+" Prettier configs 
 " autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue PrettierAsync
+
+" Javascript/Formatting
+let g:javascript_plugin_flow = 1
+let g:vim_json_syntax_conceal = 0 
+let g:jsx_ext_required = 0
 
 " Ale configs
 let g:ale_set_loclist = 0
@@ -97,6 +112,7 @@ let g:ale_set_quickfix = 0
 let g:ale_linters = {
 \   'javascript': [ 'eslint', 'flow' ]
 \ }
+let g:ale_fixers = {'javascript': ['prettier']}
 nmap <silent> <leader>aj :ALENext<CR>
 nmap <silent> <leader>ak :ALEPrevious<CR>
 
@@ -120,5 +136,27 @@ vmap <Leader>a= :Tabularize /=<CR>
 nmap <Leader>a: :Tabularize /:\zs<CR>
 vmap <Leader>a: :Tabularize /:\zs<CR>
 
-" Tagbar configs
-nnoremap <Leader>t :TagbarToggle<CR>
+" FZF configs
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+let g:fzf_layout = { 'window': 'enew' }
+let g:fzf_layout = { 'window': '-tabnew' }
+let g:fzf_layout = { 'window': '10split enew' }
+let g:fzf_layout = { 'down': '~40%' }
+let $FZF_DEFAULT_COMMAND = 'ag -g ""'
+nnoremap <silent> <C-p> :FZF<cr>
+
+" json config
+let g:vim_json_syntax_conceal = 0
