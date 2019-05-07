@@ -17,6 +17,10 @@ git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM/theme
 ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
 ```
 
+3. Install [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)
+
+4.  Install [z.sh](https://github.com/rupa/z). Place it in `plugins/z`
+
 ## Installation
 
 Place these files in your `$HOME` directory.

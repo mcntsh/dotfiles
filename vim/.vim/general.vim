@@ -1,12 +1,35 @@
 " use vim settings, rather than vi settings
 set nocompatible
 
+" syntax highlighting
+set termguicolors
+let g:colors_name = 'dracula'
+let g:dracula_colorterm = 0
+syntax on
+color dracula
+filetype plugin on
+
 " security
 set modelines=0
 set secure
 
 " hide buffers, not close them
 set hidden
+
+" better display messages
+set cmdheight=2
+
+" Smaller updatetime for CursorHold & CursorHoldI
+set updatetime=300
+
+" always show signcolumns
+set signcolumn=yes
+
+" show matching brackets/parenthesis
+set showmatch
+
+" disable startup message
+set shortmess+=I
 
 " maintain undo history between sessions
 set undofile
@@ -39,8 +62,23 @@ set relativenumber
 set splitright
 set splitbelow
 
+" folding
+set foldlevel=99
+set foldlevelstart=99
+set foldmethod=indent
+set foldcolumn=1
+
+" no line wrapping
+set nowrap
+
+" enable mouse
+set mouse=a
+
 " clipboard
 set clipboard^=unnamedplus
+
+" highlight cursor
+set cursorline
 
 " project-specific config
 set exrc
