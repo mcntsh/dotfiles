@@ -10,8 +10,10 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'easymotion/vim-easymotion'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 Plug 'rking/ag.vim'
 Plug 'taiansu/nerdtree-ag'
+Plug 'terryma/vim-multiple-cursors'
 
 " Airline
 Plug 'vim-airline/vim-airline'
