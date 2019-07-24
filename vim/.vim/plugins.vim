@@ -18,7 +18,10 @@ Plug 'terryma/vim-multiple-cursors'
 " Airline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+
+" Git
 Plug 'tpope/vim-fugitive'
+Plug 'codeindulgence/vim-tig'
 
 " Javascript
 Plug 'pangloss/vim-javascript'
@@ -196,11 +199,5 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 " Remap for rename current word
 nmap <leader>rn <Plug>(coc-rename)
 
-" Remap for format selected region
-vmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
-
-" Remap for do codeAction of current line
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-nmap <leader>qf  <Plug>(coc-fix-current)
+" Tig
+map <C-G> :Tig<Cr>
