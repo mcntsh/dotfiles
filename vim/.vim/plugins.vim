@@ -201,3 +201,4 @@ nmap <leader>rn <Plug>(coc-rename)
 
 " Tig
 map <C-G> :Tig<Cr>
+let g:tig_open_command = 'tabnew'
