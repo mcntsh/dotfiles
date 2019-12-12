@@ -1,0 +1,5 @@
+{
+  "git.addGBlameToBufferVar": true,
+  "git.addGBlameToVirtualText": true,
+  "git.enableGutters": true
+}

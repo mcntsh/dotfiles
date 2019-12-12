@@ -21,21 +21,24 @@ let g:lightline = {
   \ 'colorscheme': 'dracula',
   \ 'active': {
   \   'left': [ [ 'mode', 'paste' ],
-  \             [ 'fugitive', 'gitgutter', 'filename' ] ],
-  \   'right': [ [ 'percent', 'lineinfo' ],
-  \              [ 'syntastic' ],
-  \              [ 'fileformat', 'fileencoding', 'filetype' ] ]
+  \             ['filename' ] ],
+  \   'right': [ [ 'lineinfo' ], [ 'fugitive' ] ]
   \ },
+  \ 'inactive': { 'left': [], 'right': [] },
   \ 'component_function': {
   \   'fugitive': 'LightLineFugitive',
-  \   'gitgutter': 'LightLineGitGutter',
-  \   'readonly': 'LightLineReadonly',
-  \   'modified': 'LightLineModified',
-  \   'syntastic': 'SyntasticStatuslineFlag',
+  \   'blame': 'LightlineGitBlame',
   \   'filename': 'LightLineFilename'
-  \ },
-  \ 'subseparator': { 'left': '>', 'right': '' }
   \ }
+  \ }
+function! LightLineFullPath()
+  let root = fnamemodify(get(b:, 'git_dir'), ':h')
+  let path = expand('%:p')
+  if path[:len(root)-1] ==# root
+    return path[len(root)+1:]
+  endif
+  return expand('%')
+endfunction
 
 function! LightLineModified()
   if &filetype == "help"
@@ -59,7 +62,7 @@ function! LightLineReadonly()
   endif
 endfunction
 
-function! LightLineFugitive()
+function! LightLineFugitive()  
   return exists('*fugitive#head') ? fugitive#head() : ''
 endfunction
 
@@ -86,7 +89,7 @@ endfunction
 
 function! LightLineFilename()
   return ('' != LightLineReadonly() ? LightLineReadonly() . ' ' : '') .
-      \ ('' != expand('%:t') ? expand('%:t') : '[No Name]') .
+      \ ('' != LightLineFullPath() ? LightLineFullPath() : '[No Name]') .
       \ ('' != LightLineModified() ? ' ' . LightLineModified() : '')
 endfunction
 " }}}
@@ -237,14 +240,14 @@ Plug 'AndrewRadev/sideways.vim'
   nnoremap <Leader>> :SidewaysRight<CR>
 " }}}
 Plug 'jparise/vim-graphql'
+Plug 'maxmellon/vim-jsx-pretty'
 Plug 'pangloss/vim-javascript'
 " {{{
 let g:javascript_plugin_flow = 1
 let g:vim_json_syntax_conceal = 0 
 let g:jsx_ext_required = 0
-au BufNewFile,BufRead *.{ts} setf javascript
+au BufNewFile,BufRead *.{ts},*.tsx setf javascript
 " }}}
-Plug 'maxmellon/vim-jsx-pretty'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 " {{{
 let g:prettier#autoformat = 0
@@ -292,7 +295,11 @@ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
-" Remap keys for gotos
+" Git helpers
+nmap <silent> <leader>gh :CocCommand git.browserOpen<CR>
+nmap <silent> <leader>gc :CocCommand git.showCommit<CR>
+
+"Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
@@ -355,7 +362,7 @@ set textwidth=0   " disable auto break long lines
 nnoremap <leader>ve :tabedit $MYVIMRC<CR>
 nnoremap <leader>vr :so $MYVIMRC<CR>
 " Toggle quickfix
-map <silent> <F8> :copen<CR>
+map <silent> <leader>f :copen<CR>
 
 " Quick way to save file
 nnoremap ,, :w<CR>
@@ -368,6 +375,10 @@ inoremap jj <Esc>
 nnoremap - za
 nnoremap _ zM
 nnoremap + zR
+
+set foldlevel=20
+set foldmethod=syntax
+
 " Copy current file path to clipboard
 nnoremap <leader>% :call CopyCurrentFilePath()<CR>
 function! CopyCurrentFilePath() " {{{
