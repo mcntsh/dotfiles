@@ -12,3 +12,11 @@
 
 4. Install [vim plug](https://github.com/junegunn/vim-plug): `sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'`
+
+5. Install [ripgrep](https://github.com/BurntSushi/ripgrep#installation) via homebrew: `brew install ripgrep`
+
+6. Install node >12.12: `nvm install 12.12; nvm use 12.12`
+
+7. Open vim and run `:PlugInstall`
+
+8. Install the Coc plugins: `:CocInstall coc-tsserver coc-json coc-git coc-explorer coc-snippets coc-prettier coc-git
