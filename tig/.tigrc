@@ -1,0 +1,25 @@
+# Rebasing
+bind main R !git rebase -i %(commit)^
+bind main B !git rebase -i -p %(commit) # Ignore merge commits
+
+# Revert
+bind main ! !?git revert %(commit)
+
+# New branch
+bind refs n !@git branch "%(prompt Enter branch name: )"
+
+# Ammend commit
+bind generic + !git commit --amend
+
+# Tag commit
+bind main T !@git tag %(prompt) %(commit)
+
+# Copy commit SHA
+bind generic 9 !@sh -c "git show -s --format=%s %(commit) | pbcopy" # Mac
+
+# Stashes
+bind stash D !?git stash drop %(stash) # Drop stash
+bind stash A !?git stash apply %(stash) # Apply stash
+
+# Pushing
+bind status P !git push "%(prompt Enter remote name: )" %(branch)
