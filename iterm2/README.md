@@ -1,4 +1,4 @@
-iterm
+# iterm
 
 1. Install [iTerm2](https://www.iterm2.com/)
 
