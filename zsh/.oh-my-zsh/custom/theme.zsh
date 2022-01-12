@@ -1,1 +1,1 @@
-ZSH_THEME="spaceship"
+eval “$(starship init zsh)”
