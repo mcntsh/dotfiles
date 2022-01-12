@@ -6,4 +6,4 @@
 
 3. Install [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/INSTALL.md#oh-my-zsh)
 
-4.  Install [z.sh](https://github.com/rupa/z). Place it in `plugins/z`
+4.  Install [z.sh](https://github.com/rupa/z). Place it in `${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/z`
