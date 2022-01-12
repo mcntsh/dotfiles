@@ -1,4 +1,4 @@
-# VIM
+# vim
 
 1.  Install [Homebrew](https://brew.sh/)
 
