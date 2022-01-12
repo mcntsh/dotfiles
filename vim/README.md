@@ -19,4 +19,4 @@
 
 7. Open vim and run `:PlugInstall`
 
-8. Install the Coc plugins: `:CocInstall coc-tsserver coc-json coc-git coc-explorer coc-snippets coc-prettier coc-git
+8. Install the Coc plugins: `:CocInstall coc-tsserver coc-json coc-git coc-explorer coc-snippets coc-prettier coc-git`
