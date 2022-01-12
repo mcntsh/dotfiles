@@ -1,176 +1,94 @@
 let g:mapleader = "\<Space>"
 
-" Autoinstall vim-plug {{{
+" [plug-start] ---------------------------------------
+ 
 if empty(glob('~/.nvim/autoload/plug.vim'))
   silent !curl -fLo ~/.nvim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall
 endif
-" }}}
+
 call plug#begin('$HOME/.vim/plugged')  " Plugins initialization start {{{
-" }}}
-Plug 'dracula/vim', { 'as': 'dracula' }
-" {{{
-let g:colors_name = 'dracula'
-let g:dracula_colorterm = 0
-" }}}
-Plug 'chriskempson/base16-vim'
-Plug 'itchyny/lightline.vim'
-" {{{
-let g:lightline = {
-  \ 'colorscheme': 'dracula',
-  \ 'active': {
-  \   'left': [ [ 'mode', 'paste' ],
-  \             ['filename' ] ],
-  \   'right': [ [ 'lineinfo' ], [ 'fugitive' ] ]
-  \ },
-  \ 'inactive': { 'left': [], 'right': [] },
-  \ 'component_function': {
-  \   'fugitive': 'LightLineFugitive',
-  \   'blame': 'LightlineGitBlame',
-  \   'filename': 'LightLineFilename'
-  \ }
-  \ }
-function! LightLineFullPath()
-  let root = fnamemodify(get(b:, 'git_dir'), ':h')
-  let path = expand('%:p')
-  if path[:len(root)-1] ==# root
-    return path[len(root)+1:]
-  endif
-  return expand('%')
-endfunction
 
-function! LightLineModified()
-  if &filetype == "help"
-    return ""
-  elseif &modified
-    return "+"
-  elseif &modifiable
-    return ""
-  else
-    return ""
-  endif
-endfunction
+" [theme] ---------------------------------------
 
-function! LightLineReadonly()
-  if &filetype == "help"
-    return ""
-  elseif &readonly
-    return "RO"
-  else
-    return ""
-  endif
-endfunction
+Plug 'arcticicestudio/nord-vim'
+set t_Co=256
+syntax on
+set cursorline     " highlight current line
 
-function! LightLineFugitive()  
-  return exists('*fugitive#head') ? fugitive#head() : ''
-endfunction
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
 
-function! LightLineGitGutter()
-  if ! exists('*GitGutterGetHunkSummary')
-        \ || ! get(g:, 'gitgutter_enabled', 0)
-        \ || winwidth('.') <= 90
-    return ''
-  endif
-  let symbols = [
-        \ g:gitgutter_sign_added,
-        \ g:gitgutter_sign_modified,
-        \ g:gitgutter_sign_removed
-        \ ]
-  let hunks = GitGutterGetHunkSummary()
-  let ret = []
-  for i in [0, 1, 2]
-    if hunks[i] > 0
-      call add(ret, symbols[i] . hunks[i])
-    endif
-  endfor
-  return join(ret, ' ')
-endfunction
+" [indentation] ---------------------------------------
 
-function! LightLineFilename()
-  return ('' != LightLineReadonly() ? LightLineReadonly() . ' ' : '') .
-      \ ('' != LightLineFullPath() ? LightLineFullPath() : '[No Name]') .
-      \ ('' != LightLineModified() ? ' ' . LightLineModified() : '')
-endfunction
-" }}}
 Plug 'Yggdroot/indentLine'
-Plug 'tpope/vim-fugitive'
+set expandtab     " replace <Tab with spaces
+set tabstop=2     " number of spaces that a <Tab> in the file counts for
+set softtabstop=2 " remove <Tab> symbols as it was spaces
+set shiftwidth=2  " indent size for << and >>
+set shiftround    " round indent to multiple of 'shiftwidth' (for << and >>)
+
+
+" [tmux navigator] ---------------------------------------
+
 Plug 'christoomey/vim-tmux-navigator'
-" {{{
 let g:tmux_navigator_no_mappings = 1
 nnoremap <silent> <C-h> :TmuxNavigateLeft<CR>
 nnoremap <silent> <C-j> :TmuxNavigateDown<CR>
 nnoremap <silent> <C-k> :TmuxNavigateUp<CR>
 nnoremap <silent> <C-l> :TmuxNavigateRight<CR>
-" }}}
-Plug 'kshenoy/vim-signature'
-" {{{
-  let g:SignatureMarkerTextHL = 'Typedef'
-  let g:SignatureMap = {
-    \ 'Leader'             :  "m",
-    \ 'PlaceNextMark'      :  "m,",
-    \ 'ToggleMarkAtLine'   :  "m.",
-    \ 'PurgeMarksAtLine'   :  "m-",
-    \ 'DeleteMark'         :  "dm",
-    \ 'PurgeMarks'         :  "m<Space>",
-    \ 'PurgeMarkers'       :  "m<BS>",
-    \ 'GotoNextLineAlpha'  :  "",
-    \ 'GotoPrevLineAlpha'  :  "",
-    \ 'GotoNextSpotAlpha'  :  "",
-    \ 'GotoPrevSpotAlpha'  :  "",
-    \ 'GotoNextLineByPos'  :  "]'",
-    \ 'GotoPrevLineByPos'  :  "['",
-    \ 'GotoNextSpotByPos'  :  "]`",
-    \ 'GotoPrevSpotByPos'  :  "[`",
-    \ 'GotoNextMarker'     :  "[+",
-    \ 'GotoPrevMarker'     :  "[-",
-    \ 'GotoNextMarkerAny'  :  "]=",
-    \ 'GotoPrevMarkerAny'  :  "[=",
-    \ 'ListLocalMarks'     :  "m/",
-    \ 'ListLocalMarkers'   :  "m?"
-    \ }
-" }}}
-Plug 'tpope/vim-sleuth'
-Plug 'junegunn/limelight.vim'
-" {{{
-  hi Normal ctermbg=NONE guibg=NONE
-  let g:limelight_default_coefficient = 0.7
-  let g:limelight_conceal_ctermfg = 238
-  nmap <silent> gl :Limelight!!<CR>
-  xmap gl <Plug>(Limelight)
-" }}}
-Plug 'scrooloose/nerdtree'
-" {{{
-let NERDTreeShowHidden = 1
-let NERDTreeMinimalUI = 1
-let NERDTreeIgnore = [
-      \ '^\~$[[dir]]',
-      \ '^\.git$[[dir]]',
-      \ '^\.o$[[file]]',
-      \ '^\.pyc$[[file]]',
-      \ '^\.DS_Store$[[file]]',
-      \ ]
-let g:loaded_netrwPlugin = 1
-autocmd FileType netrw set nolist
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-function! OpenNerdTree()
-  if &modifiable && strlen(expand('%')) > 0 && !&diff
-    NERDTreeFind
-  else
-    NERDTreeToggle
-  endif
-endfunction
-nnoremap <silent> <C-n> :call OpenNerdTree()<CR>
-" }}}
+" [dev-icons] ---------------------------------------
+
+Plug 'kyazdani42/nvim-web-devicons' " for file icons
+
+" [nvim-tree] ---------------------------------------
+
+Plug 'kyazdani42/nvim-tree.lua'
+let g:loaded_netrw = 1 " Disable netrw
+let g:nvim_tree_auto_open = 1
+let g:nvim_tree_auto_close = 1
+ 
+" [lightline] ---------------------------------------
+
+Plug 'itchyny/lightline.vim'
+set noshowmode
+let g:lightline = {
+\   'colorscheme': 'nord',
+\ }
+
+" [searching] ---------------------------------------
+
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-" {{{
+
+set ignorecase " ignore case of letters
+set smartcase  " override the 'ignorecase' when there is uppercase letters
+set gdefault   " when on, the :substitute flag 'g' is default on
+
+
 let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*" --glob "!node_modules/*"'
 let g:fzf_nvim_statusline = 0 " disable statusline overwriting
 set grepprg=rg\ --vimgrep
+
+let g:fzf_colors = {
+  \ 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Label'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Label'],
+  \ 'info':    ['fg', 'Comment'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Function'],
+  \ 'pointer': ['fg', 'Statement'],
+  \ 'marker':  ['fg', 'Conditional'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
 
 nnoremap <silent> <leader><space> :Files<CR>
 nnoremap <silent> <leader>a :Buffers<CR>
@@ -216,67 +134,62 @@ function! FZF_Folder_Actions()
     \ 'sink': {folder -> s:search_folder(folder)},
     \ 'down':    '40%' }))
 endfunction
-" }}}
+
+" [easy-motion] ---------------------------------------
+
 Plug 'Lokaltog/vim-easymotion'
-" {{{
-  let g:EasyMotion_do_mapping = 0
-  let g:EasyMotion_smartcase = 1
-  let g:EasyMotion_off_screen_search = 0
-  nmap ; <Plug>(easymotion-s2)
-" }}}
+let g:EasyMotion_do_mapping = 0
+let g:EasyMotion_smartcase = 1
+let g:EasyMotion_off_screen_search = 0
+nmap ; <Plug>(easymotion-s2)
+
+" [clever-f] ---------------------------------------
+
 Plug 'rhysd/clever-f.vim'
-" {{{
-  let g:clever_f_across_no_line = 1
-" }}}
+let g:clever_f_across_no_line = 1
+
+" [tcomment] ---------------------------------------
+
 Plug 'tomtom/tcomment_vim'
+
+" [surrounding] ---------------------------------------
+
 Plug 'tpope/vim-surround'
+Plug 'jiangmiao/auto-pairs'
+
+" [emmet] ---------------------------------------
+
 Plug 'mattn/emmet-vim'
-" {{{
-  let g:user_emmet_expandabbr_key = '<c-e>'
-" }}}
-Plug 'AndrewRadev/sideways.vim'
-" {{{
-  nnoremap <Leader>< :SidewaysLeft<CR>
-  nnoremap <Leader>> :SidewaysRight<CR>
-" }}}
+let g:user_emmet_expandabbr_key = '<c-e>'
+
+" [syntax-highlighting] ---------------------------------------
+
 Plug 'jparise/vim-graphql'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'pangloss/vim-javascript'
-" {{{
+Plug 'elzr/vim-json'
+let g:vim_json_syntax_conceal = 0
 let g:javascript_plugin_flow = 1
 let g:vim_json_syntax_conceal = 0 
 let g:jsx_ext_required = 0
 au BufNewFile,BufRead *.{ts},*.tsx setf javascript
-" }}}
+
+" [prettier] ---------------------------------------
+
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
-" {{{
 let g:prettier#autoformat = 0
 autocmd BufWritePre *.js,*.ts,.jsx,*.json,*.css,*.scss,*.less,*.graphql Prettier
-" }}}
-Plug 'elzr/vim-json'
-" {{{
-let g:vim_json_syntax_conceal = 0
-" }}}
-Plug 'jiangmiao/auto-pairs'
-Plug 'mbbill/undotree'
-" {{{
-  set undofile
-  " Auto create undodir if not exists
-  let undodir = expand($HOME . '/.nvim/cache/undodir')
-  if !isdirectory(undodir)
-    call mkdir(undodir, 'p')
-  endif
-  let &undodir = undodir
 
-  nnoremap <leader>U :UndotreeToggle<CR>
-" }}}
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': 'yarn install'}
-" {{{
+" [coc] ---------------------------------------
+
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 set updatetime=300 " faster updates for messages
 set shortmess+=c   " don't give ins-completion-menu messages
 set signcolumn=yes " always show sign columns
 
-" Tab to trigger completion
+let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-git', 'coc-explorer', 'coc-snippets', 'coc-prettier', 'coc-git']
+
+" Tab/backspace QOL
 inoremap <silent><expr> <TAB>
   \ pumvisible() ? "\<C-n>" :
   \ <SID>check_back_space() ? "\<TAB>" :
@@ -307,7 +220,6 @@ nmap <silent> gr <Plug>(coc-references)
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
-
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
@@ -321,11 +233,13 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Remap for rename current word
 nmap <leader>rn <Plug>(coc-rename)
-" }}}
-call plug#end() " Plugins initialization finished {{{
-" }}}
 
-" General settings {{{
+" [plug-end] ---------------------------------------
+
+call plug#end()
+
+" [general-settings] ---------------------------------------
+
 set shortmess+=I
 set clipboard=unnamed,unnamedplus
 set number         " show line numbers
@@ -338,7 +252,7 @@ set scrolloff=999       " always keep cursor at the middle of screen
 set virtualedit=onemore " allow the cursor to move just past the end of the line
 set undolevels=5000     " set maximum undo levels
 
-" ! save global variables that doesn't contains lowercase letters
+" ! save global variables that don't contains lowercase letters
 " h disable the effect of 'hlsearch' when loading the viminfo
 " f1 store marks
 " '100 remember 100 previously edited files
@@ -358,7 +272,8 @@ set showcmd      " always show current command
 set nowrap        " disable wrap for long lines
 set textwidth=0   " disable auto break long lines
 
-" Key Mappings " {{{
+" [key-mappings] ---------------------------------------
+
 nnoremap <leader>ve :tabedit $MYVIMRC<CR>
 nnoremap <leader>vr :so $MYVIMRC<CR>
 " Toggle quickfix
@@ -381,12 +296,11 @@ set foldmethod=syntax
 
 " Copy current file path to clipboard
 nnoremap <leader>% :call CopyCurrentFilePath()<CR>
-function! CopyCurrentFilePath() " {{{
+function! CopyCurrentFilePath()
   let @+ = expand('%')
   echo @+
 endfunction
-" }}}
-"
+
 " Keep search results at the center of screen
 nmap n nzz
 nmap N Nzz
@@ -409,23 +323,5 @@ nmap <leader>7 7gt
 nmap <leader>8 8gt
 nmap <leader>9 9gt
 
-"Indentation {{{
-set expandtab     " replace <Tab with spaces
-set tabstop=2     " number of spaces that a <Tab> in the file counts for
-set softtabstop=2 " remove <Tab> symbols as it was spaces
-set shiftwidth=2  " indent size for << and >>
-set shiftround    " round indent to multiple of 'shiftwidth' (for << and >>)
-" }}}
-" Search {{{
-set ignorecase " ignore case of letters
-set smartcase  " override the 'ignorecase' when there is uppercase letters
-set gdefault   " when on, the :substitute flag 'g' is default on
-" }}}
-" Colors and highlightings {{{
-set cursorline     " highlight current line
-set colorcolumn=80 " highlight column
-
 set termguicolors
-syntax on
-color dracula
-
+colorscheme nord
