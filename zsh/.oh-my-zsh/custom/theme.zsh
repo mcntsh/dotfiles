@@ -1,1 +1,2 @@
-eval “$(starship init zsh)”
+ZSH_THEME="afowler"
+export BAT_THEME="Nord"
