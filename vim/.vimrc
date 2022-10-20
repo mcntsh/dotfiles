@@ -1,5 +1,7 @@
 let g:mapleader = "\<Space>"
 
+set nocompatible
+
 " [plug-start] ---------------------------------------
  
 if empty(glob('~/.nvim/autoload/plug.vim'))
@@ -32,6 +34,19 @@ set softtabstop=2 " remove <Tab> symbols as it was spaces
 set shiftwidth=2  " indent size for << and >>
 set shiftround    " round indent to multiple of 'shiftwidth' (for << and >>)
 
+" [file explorer] ---------------------------------------
+
+Plug 'francoiscabrol/ranger.vim'
+Plug 'rbgrouleff/bclose.vim'
+
+let g:NERDTreeHijackNetrw = 0
+let g:ranger_replace_netrw = 1
+nnoremap <silent> <C-;> :RangerWorkingDirectory<CR>
+
+" [tmux navigator] ---------------------------------------
+
+Plug 'lambdalisue/battery.vim'
+let g:battery#update_tabline = 1 " For statusline.
 
 " [tmux navigator] ---------------------------------------
 
@@ -45,21 +60,6 @@ nnoremap <silent> <C-l> :TmuxNavigateRight<CR>
 " [dev-icons] ---------------------------------------
 
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
-
-" [nvim-tree] ---------------------------------------
-
-Plug 'kyazdani42/nvim-tree.lua'
-let g:loaded_netrw = 1 " Disable netrw
-let g:nvim_tree_auto_open = 1
-let g:nvim_tree_auto_close = 1
- 
-" [lightline] ---------------------------------------
-
-Plug 'itchyny/lightline.vim'
-set noshowmode
-let g:lightline = {
-\   'colorscheme': 'nord',
-\ }
 
 " [searching] ---------------------------------------
 
@@ -91,14 +91,10 @@ let g:fzf_colors = {
   \ 'header':  ['fg', 'Comment'] }
 
 nnoremap <silent> <leader><space> :Files<CR>
-nnoremap <silent> <leader>a :Buffers<CR>
-nnoremap <silent> <leader>A :Windows<CR>
-nnoremap <silent> <leader>; :BLines<CR>
-nnoremap <silent> <leader>o :BTags<CR>
-nnoremap <silent> <leader>O :Tags<CR>
-nnoremap <silent> <leader>? :History<CR>
+nnoremap <silent> ,, :Buffers<CR>
+nnoremap <silent> <leader>w :Windows<CR>
+nnoremap <silent> <leader>h :History<CR>
 nnoremap <silent> <leader>/ :execute 'Ag ' . input('Ag/')<CR>
-nnoremap <silent> <leader>. :RgFolder<CR> 
 
 nnoremap <silent> <leader>gl :Commits<CR>
 nnoremap <silent> <leader>ga :BCommits<CR>
@@ -108,40 +104,13 @@ imap <C-x><C-f> <plug>(fzf-complete-file-ag)
 imap <C-x><C-l> <plug>(fzf-complete-line)
 imap <c-x><c-f> <plug>(fzf-complete-path)
 
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --smart-case --only-matching '. <q-args>, 1,
-  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \   <bang>0)
-command! -bang -nargs=* RgFolder :call FZF_Folder_Actions()
+" [repeat] ---------------------------------------
 
-function! FZF_Folder_Actions()
-  function! s:list_folders()
-    return split(system('fd -t d .'), '\n')
-  endfunction
+Plug 'tpope/vim-repeat'
 
-  function! s:search_folder(folder)
-    execute 'Rg ' . input(a:folder . ' Ag/') . ' ' . a:folder
+" [leap] ---------------------------------------
 
-    if has('nvim')
-      call feedkeys('i', 'n')
-    endif
-  endfunction
-
-  call fzf#run(fzf#wrap({
-    \ 'source': <sid>list_folders(),
-    \ 'sink': {folder -> s:search_folder(folder)},
-    \ 'down':    '40%' }))
-endfunction
-
-" [easy-motion] ---------------------------------------
-
-Plug 'Lokaltog/vim-easymotion'
-let g:EasyMotion_do_mapping = 0
-let g:EasyMotion_smartcase = 1
-let g:EasyMotion_off_screen_search = 0
-nmap ; <Plug>(easymotion-s2)
+Plug 'ggandor/leap.nvim'
 
 " [clever-f] ---------------------------------------
 
@@ -164,21 +133,30 @@ let g:user_emmet_expandabbr_key = '<c-e>'
 
 " [syntax-highlighting] ---------------------------------------
 
-Plug 'jparise/vim-graphql'
-Plug 'maxmellon/vim-jsx-pretty'
+Plug 'sheerun/vim-polyglot'
 Plug 'pangloss/vim-javascript'
-Plug 'elzr/vim-json'
-let g:vim_json_syntax_conceal = 0
 let g:javascript_plugin_flow = 1
-let g:vim_json_syntax_conceal = 0 
 let g:jsx_ext_required = 0
 au BufNewFile,BufRead *.{ts},*.tsx setf javascript
 
-" [prettier] ---------------------------------------
+" [markdown] ---------------------------------------
 
-Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
-let g:prettier#autoformat = 0
-autocmd BufWritePre *.js,*.ts,.jsx,*.json,*.css,*.scss,*.less,*.graphql Prettier
+augroup Markdown
+  autocmd!
+  autocmd FileType markdown set wrap
+augroup END
+
+" [focus] ---------------------------------------
+
+Plug 'junegunn/limelight.vim'
+Plug 'junegunn/goyo.vim'
+
+let g:goyo_linenr=1
+
+nnoremap <silent> <C-g> :Goyo<CR>
+
+autocmd! User GoyoEnter Limelight
+autocmd! User GoyoLeave Limelight!
 
 " [coc] ---------------------------------------
 
@@ -187,44 +165,61 @@ set updatetime=300 " faster updates for messages
 set shortmess+=c   " don't give ins-completion-menu messages
 set signcolumn=yes " always show sign columns
 
-let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-git', 'coc-explorer', 'coc-snippets', 'coc-prettier', 'coc-git']
+" Some servers have issues with backup files, see #649.
+set nobackup
+set nowritebackup
 
-" Tab/backspace QOL
+let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-snippets', 'coc-prettier', 'coc-eslint']
+
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
 inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" :
-  \ <SID>check_back_space() ? "\<TAB>" :
-  \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-function! s:check_back_space() abort
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-" Use <cr> to confirm completion,
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+hi CocSearch ctermfg=12 guifg=#18A3FF
+hi CocMenuSel ctermbg=109 guibg=#13354A
 
 " Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
-" Git helpers
-nmap <silent> <leader>gh :CocCommand git.browserOpen<CR>
-nmap <silent> <leader>gc :CocCommand git.showCommit<CR>
-
-"Remap keys for gotos
+" GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Use K to show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call ShowDocumentation()<CR>
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
   else
-    call CocAction('doHover')
+    call feedkeys('K', 'in')
   endif
 endfunction
 
@@ -234,9 +229,70 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 " Remap for rename current word
 nmap <leader>rn <Plug>(coc-rename)
 
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Run the Code Lens action on the current line.
+nmap <leader>cl  <Plug>(coc-codelens-action)
+
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+
+" Remap <C-f> and <C-b> for scroll float windows/popups.
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
+
+" [git] ---------------------------------------
+
+Plug 'tpope/vim-fugitive'
+Plug 'itchyny/vim-gitbranch'
+Plug 'airblade/vim-gitgutter'
+Plug 'zivyangll/git-blame.vim'
+
+autocmd CursorHold * :call gitblame#echo()
+
+" [lightline] ---------------------------------------
+
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+let g:airline#extensions#tabline#enabled = 1
+
 " [plug-end] ---------------------------------------
 
 call plug#end()
+
+" [leap (cont)] ---------------------------------------
+
+lua require('leap').set_default_keymaps()
 
 " [general-settings] ---------------------------------------
 
@@ -266,11 +322,13 @@ set wildmode=list:longest,full
 set list " show hidden characters
 set listchars=tab:•·,trail:·,extends:❯,precedes:❮,nbsp:×
 
-set laststatus=2 " always show status line
-set showcmd      " always show current command
-
-set nowrap        " disable wrap for long lines
-set textwidth=0   " disable auto break long lines
+" [wrapping] ---------------------------------------
+ 
+if &buftype == 'nofile'
+  set linebreak
+  set showbreak=+++
+  set textwidth=80
+endif
 
 " [key-mappings] ---------------------------------------
 
@@ -278,10 +336,6 @@ nnoremap <leader>ve :tabedit $MYVIMRC<CR>
 nnoremap <leader>vr :so $MYVIMRC<CR>
 " Toggle quickfix
 map <silent> <leader>f :copen<CR>
-
-" Quick way to save file
-nnoremap ,, :w<CR>
-inoremap ,, <Esc>:w<CR>gi
 
 " re-bind escape
 inoremap jj <Esc>
@@ -311,17 +365,6 @@ nmap g# g#zz
 
 " Select all text
 noremap vA ggVG
-
-" Switch between tabs
-nmap <leader>1 1gt
-nmap <leader>2 2gt
-nmap <leader>3 3gt
-nmap <leader>4 4gt
-nmap <leader>5 5gt
-nmap <leader>6 6gt
-nmap <leader>7 7gt
-nmap <leader>8 8gt
-nmap <leader>9 9gt
 
 set termguicolors
 colorscheme nord

@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*- 
 
 import sys
- 
+
 def wait_for_enter():
-    raw_input("[↵ Enter] to continue: ")
+    input("[↵ Enter] to continue: ")
 
 class BrewUpdateStep(object):
     def run(self, context):
@@ -50,9 +50,9 @@ class ItermDownloadStep(object):
         print("   {0}".format(self.iterm_url))
         wait_for_enter()
 class HaskligDownloadStep(object):
-    font_url = "https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Hasklig"
+    font_url = "https://nerdfonts.com/font-downloads"
     def run(self, context):
-        print("Download & install font:")
+        print("Download & install Hasklug font:")
         print("   {0}".format(self.font_url))
         wait_for_enter()
 class ITermColorsStep(object):
@@ -151,6 +151,12 @@ class NvmInstallStep(object):
         print("   run `nvm use 12.12`")
         wait_for_enter()
 
+class RipGrepInstallStep(object):
+    def run(self, context):
+        print("Install Ranger:")
+        print("   brew install ranger")
+        wait_for_enter()
+
 if __name__ == "__main__":
     context = {}
     procedure = [
@@ -168,6 +174,7 @@ if __name__ == "__main__":
         KeyRepeatRateStep(),
         TigInstallStep(),
         TigSetupStep(),
+        RipGrepInstallStep(),
         TmuxInstallStep(),
         TmuxSetupStep(),
         VimInstallStep(),
