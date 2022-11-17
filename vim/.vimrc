@@ -41,7 +41,7 @@ Plug 'rbgrouleff/bclose.vim'
 
 let g:NERDTreeHijackNetrw = 0
 let g:ranger_replace_netrw = 1
-nnoremap <silent> <C-;> :RangerWorkingDirectory<CR>
+nnoremap <silent> ;; :RangerWorkingDirectory<CR>
 
 " [tmux navigator] ---------------------------------------
 
@@ -146,6 +146,15 @@ augroup Markdown
   autocmd FileType markdown set wrap
 augroup END
 
+" [marks] ---------------------------------------
+
+Plug 'jacquesbh/vim-showmarks'
+autocmd VimEnter * DoShowMarks
+
+" [buffers] ---------------------------------------
+
+nnoremap <leader>bd :1,100bd<CR>
+
 " [focus] ---------------------------------------
 
 Plug 'junegunn/limelight.vim'
@@ -184,8 +193,9 @@ inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
 " Make <CR> to accept selected completion item or notify coc.nvim to format
 " <C-g>u breaks current undo, please make your own choice.
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+inoremap <expr> <cr> coc#pum#visible() ? coc#_select_confirm() : "\<CR>"
+
 function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
@@ -275,9 +285,10 @@ command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.org
 Plug 'tpope/vim-fugitive'
 Plug 'itchyny/vim-gitbranch'
 Plug 'airblade/vim-gitgutter'
-Plug 'zivyangll/git-blame.vim'
+Plug 'APZelos/blamer.nvim'
 
-autocmd CursorHold * :call gitblame#echo()
+let g:blamer_enabled = 1
+let g:blamer_show_in_insert_modes = 0
 
 " [lightline] ---------------------------------------
 

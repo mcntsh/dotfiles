@@ -151,11 +151,24 @@ class NvmInstallStep(object):
         print("   run `nvm use 12.12`")
         wait_for_enter()
 
-class RipGrepInstallStep(object):
+class RangerInstallStep(object):
     def run(self, context):
         print("Install Ranger:")
         print("   brew install ranger")
         wait_for_enter()
+
+class TpmInstallStep(object):
+    def run(self, context):
+        print("Install TPM:")
+        print("   git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm")
+        wait_for_enter()
+class TpmConfigureStep(object):
+    def run(self, context):
+        print("Configure TPM:")
+        print("   start tmux `$ tmux`")
+        print("   C-a I")
+        wait_for_enter()
+
 
 if __name__ == "__main__":
     context = {}
@@ -181,7 +194,10 @@ if __name__ == "__main__":
         VimPythonStep(),
         VimPlugStep(),
         VimConfigStep(),
-        VimPluginsStep()
+        VimPluginsStep(),
+        RangerInstallStep(),
+        TpmInstallStep(),
+        TpmConfigureStep()
     ]
     for step in procedure:
         step.run(context)
